@@ -4,8 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js" ,
-    "devNodemon": "nodemon app.js --port 3000 "
+    "start": "node app.js" 
   },
   "keywords": [],
   "author": "",
