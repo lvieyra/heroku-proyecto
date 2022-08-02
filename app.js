@@ -22,33 +22,33 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-const PORT =  process.env.PORT || 80;
+const PORT =  process.env.PORT || 3000;
 
-app.listen(PORT, ()=>{
-    console.log(`Server Up! ${PORT}`)
-})
-// const PORT = argv.port ? argv.port : argv._.length > 0 ? argv._[0] : 8080
-// const modo = argv.modo || 'fork';
+// app.listen(PORT, ()=>{
+//     console.log(`Server Up! ${PORT}`)
+// })
+//const PORT = argv.port ? argv.port : argv._.length > 0 ? argv._[0] : 8080
+const modo = argv.modo || 'fork';
 
 
-// if (modo !== 'fork' ){
+if (modo !== 'fork' ){
     
-//     if(cluster.isPrimary){
-//         console.log(`Primary process ${process.pid}`);
+    if(cluster.isPrimary){
+        console.log(`Primary process ${process.pid}`);
         
-//         for (let index = 0; index < core.cpus().length; index++) {
-//             cluster.fork()
+        for (let index = 0; index < core.cpus().length; index++) {
+            cluster.fork()
             
-//         }
-//         cluster.on('exit', (worker) => {
-//             cluster.fork();
-//         });
-//     }else{
-//         app.listen(PORT, ()=>console.log(`Worker process ${process.pid} running the web server`));
-//     }
-// }else{
-//     app.listen(PORT, ()=>console.log(`Worker process ${process.pid} running the web server`));
-// }
+        }
+        cluster.on('exit', (worker) => {
+            cluster.fork();
+        });
+    }else{
+        app.listen(PORT, ()=>console.log(`Worker process ${process.pid} running the web server`));
+    }
+}else{
+    app.listen(PORT, ()=>console.log(`Worker process ${process.pid} running the web server`));
+}
 
 
 // Se indica el directorio donde se almacenarán las plantillas 
@@ -74,7 +74,7 @@ let baseSession = session({
     secret: process.env.CLAVE,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: process.env.TIEMPO }
+    cookie: { maxAge: 60000  }
 });
 
 app.use(cookieParser());
